@@ -10,6 +10,7 @@ import StraightIcon from "@mui/icons-material/Straight"
 import RoundaboutRightIcon from "@mui/icons-material/RoundaboutRight"
 // import { TrinityRingsSpinner } from "react-epic-spinners"
 import { ToastContainer, toast } from "react-toastify"
+import { Feature, GeoJSONType } from "./types.tsx"
 
 interface GeoClosedContentProps {
   selectedOption: string | null
@@ -55,7 +56,7 @@ const GeoClosedContent: React.FC<GeoClosedContentProps> = ({ selectedOption, set
   //3) actualGeoMode is currently straightroute(false) AND newSearch is false, we just switch the geoToLeafLet data
   // back to curveroute
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  const [geoArrayforClean, setGeoArrayForClean] = useState([])
+  const [geoArrayforClean, setGeoArrayForClean] = useState<Array<GeoJSONType>>([])
   async function switchActualGeo() {
     if (actualGeoMode == true) {
       setGeoToLeaflet(geoByStraightRoute)
@@ -187,7 +188,7 @@ const GeoClosedContent: React.FC<GeoClosedContentProps> = ({ selectedOption, set
         console.log(response.data)
         console.log(response.data.features)
 
-        const filteredFeatures: GeoJSON.Feature[] = response.data.features.filter((feature: GeoJSON.Feature) => {
+        const filteredFeatures: GeoJSONType = response.data.features.filter((feature: Feature) => {
           if (coordinateFlag == "first") {
             console.log("FIRST FEATURE START")
             if (feature.properties) return feature.properties["point type"] !== "start" && feature.properties["point type"] !== "goal" && feature.properties["point type"] !== "closest goal"
@@ -233,7 +234,7 @@ const GeoClosedContent: React.FC<GeoClosedContentProps> = ({ selectedOption, set
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //This function will collect geoJSON from curvedLatLongAPI, concate and map them to allow visualization on leaflet
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  async function cleanGeoByCurveRoute(uncleanedGeoJSON) {
+  async function cleanGeoByCurveRoute(uncleanedGeoJSON: Array<GeoJSONType>) {
     console.log("INSIDE CLEANING !!!!!!!!!!!!!!!!!!!")
     // Initialize an empty array to store all features
     let allFeatures = []
@@ -293,11 +294,11 @@ const GeoClosedContent: React.FC<GeoClosedContentProps> = ({ selectedOption, set
             <Select value={vehOptions.find((opt) => opt.value === selectedOption)} onChange={handleDropdownChange} options={vehOptions} placeholder="Select or type..." />
             {selectedOption != null && actualGeoMode === true && <StraightIcon style={{ backgroundColor: "#00e5ff", border: 1 }} onClick={() => switchActualGeo()} />}
             {selectedOption != null && actualGeoMode === false && <RoundaboutRightIcon style={{ backgroundColor: "#00e5ff", border: 1 }} onClick={() => switchActualGeo()} />}
-            {historyVehRef.length > "0" && (
+            {historyVehRef.length > 0 && (
               <div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   Past Searches:
-                  {historyVehRef.length > "0" && (
+                  {historyVehRef.length > 0 && (
                     // <button class="history-button" onClick={() => clearHistory("historyVehRef")}>
                     //   <DeleteIcon style={{ backgroundColor: "green" }} />
                     // </button>

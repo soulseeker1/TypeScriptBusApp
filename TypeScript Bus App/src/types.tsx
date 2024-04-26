@@ -1,11 +1,20 @@
-export interface selectedOptionType {
-  // Define the properties of your GeoFeature object
+export interface GeoJSONType {
+  app_name: string
+  type: string
+  features: Feature[]
 }
 
-export interface HistoryItem {
-  // Define the properties of your history item
+export interface Feature {
+  type: string
+  geometry: Geometry
+  properties: Properties
 }
 
-export interface ToastMessage {
-  // Define the properties of your toast message
+export interface Geometry {
+  type: string
+  coordinates: number[]
+}
+
+export interface Properties {
+  "point type": string
 }
