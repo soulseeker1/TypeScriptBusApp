@@ -1,0 +1,221 @@
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+h1 {
+  text-align: center;
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+.alert-box {
+  z-index: 1; /* Set z-index to 0 or a lower value */
+  position: absolute;
+}
+
+.ForMap {
+  margin: 0;
+  width: 100% !important;
+  z-index: 0; /* Set z-index to 0 or a lower value */
+  position: absolute;
+}
+
+.column {
+  float: left;
+  width: 50%;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.map-container {
+  z-index: 0; /* Set z-index to 0 or a lower value */
+  position: relative;
+}
+
+.sidenav-open {
+  height: 100%; /* 100% Full-height */
+  width: 0px; /* 0 width - change this with JavaScript */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Stay on top */
+  top: 0; /* Stay at the top */
+  left: 0;
+  background-color: #efdcac;
+  overflow-x: hidden; /* Disable horizontal scroll */
+  padding-top: 10px; /* Place content 60px from the top */
+  padding-right: 10px;
+  padding-bottom: 10px;
+  padding-left: 10px;
+  transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+}
+
+.sidenav-close {
+  height: 100%; /* 100% Full-height */
+  width: 0px; /* 0 width - change this with JavaScript */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Stay on top */
+  top: 0; /* Stay at the top */
+  left: 0;
+  background-color: #efdcac;
+  overflow-x: hidden; /* Disable horizontal scroll */
+  transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+}
+
+/* The navigation menu links */
+.sidenav a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+  border-radius: 10px 10px 0 0;
+}
+
+/* When you mouse over the navigation links, change their color */
+.sidenav a:hover {
+  color: #f1f1f1;
+}
+
+/* Position and style the close button (top right corner) */
+.sidenav .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+.header {
+  display: flex;
+  text-align: center;
+  height: 10vh;
+  align-items: center;
+  background-color: #83929f;
+  z-index: 1;
+  transition: 0.5s;
+  overflow: hidden; /* Hide scrollbars */
+}
+
+.header-close {
+  display: flex;
+  text-align: center;
+  height: 10vh;
+  align-items: center;
+  background-color: #ffffff;
+  z-index: 1;
+  transition: 0.5s;
+  overflow: hidden; /* Hide scrollbars */
+}
+
+#header-title {
+  text-align: center;
+  margin: 0 auto;
+}
+
+/* The button used to open the sidebar */
+.openbtn {
+  font-size: 20px;
+  cursor: pointer;
+  background-color: #111;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+}
+
+.openbtn:hover {
+  background-color: #444;
+}
+
+#history-button {
+  background-color: #04aa6d; /* Green background */
+  border: 1px solid green; /* Green border */
+  color: white; /* White text */
+  padding: 5px 24px; /* Some padding */
+  cursor: pointer; /* Pointer/hand icon */
+  width: 50%; /* Set a width if needed */
+  display: block; /* Make the buttons appear below each other */
+  height: 5vh;
+  margin-right: 0;
+  border-radius: 4px;
+}
+
+/*Table CSS */
+table,
+th,
+td {
+  border: 1px solid;
+}
+
+/* The button used to close and open all sidebar */
+.fullscreenbtn {
+  font-size: 20px;
+  cursor: pointer;
+  background-color: #fff;
+  color: black;
+  padding: 10px 15px;
+  border: none;
+  z-index: 2;
+}
+/*Toggle button*/
+togglebtn {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+.marker-hue-change {
+  filter: hue-rotate(120deg); /* Adjust the hue rotation angle as needed */
+}
+
+/*Loading*/
+#loader {
+  display: block;
+  position: fixed;
+}
+
+.loadingStyle {
+  display: flex;
+  justify-content: center;
+  top: 50%;
+}
+
+.sideBarStyle {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  top: 50%;
+}
