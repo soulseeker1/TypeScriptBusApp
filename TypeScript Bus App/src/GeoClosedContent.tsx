@@ -8,7 +8,7 @@ import { styled } from "@mui/system"
 import DeleteIcon from "@mui/icons-material/Delete"
 import StraightIcon from "@mui/icons-material/Straight"
 import RoundaboutRightIcon from "@mui/icons-material/RoundaboutRight"
-// import { TrinityRingsSpinner } from "react-epic-spinners"
+import { TrinityRingsSpinner } from "react-epic-spinners"
 import { ToastContainer, toast } from "react-toastify"
 import { Feature, GeoJSONType } from "./types.tsx"
 
@@ -17,8 +17,8 @@ interface GeoClosedContentProps {
   setSelectedOption: React.Dispatch<React.SetStateAction<string | null>>
   selectedLineOption: string | null
   setSelectedLineOption: React.Dispatch<React.SetStateAction<string | null>>
-  handleDropdownChange: (event: ChangeEvent<HTMLSelectElement>) => void
-  handleDropdownLineChange: (event: ChangeEvent<HTMLSelectElement>) => void
+  //   handleDropdownChange: (event: ChangeEvent<HTMLSelectElement>) => void
+  //   handleDropdownLineChange: (event: ChangeEvent<HTMLSelectElement>) => void
   vehOptions: {
     value: string
     label: string
@@ -30,21 +30,28 @@ interface GeoClosedContentProps {
   historyLine: Array<string>
   historyVehRef: Array<string>
   clearHistory: (target: string) => void
-  GeoToLeaflet: GeoJSON.FeatureCollection | null
-  setGeoToLeaflet: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection | null>>
-  GeoByCurveRoute: GeoJSON.FeatureCollection | null
-  setGeoByCurveRoute: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection | null>>
+  GeoToLeaflet: GeoJSONType | null
+  setGeoToLeaflet: React.Dispatch<React.SetStateAction<GeoJSONType | null>>
+  GeoByCurveRoute: GeoJSONType | null
+  setGeoByCurveRoute: React.Dispatch<React.SetStateAction<GeoJSONType | null>>
   isLoading: boolean
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
   actualGeoMode: boolean
   setActualGeoMode: React.Dispatch<React.SetStateAction<boolean>>
-  geoByStraightRoute: GeoJSON.FeatureCollection | null
-  setGeoByStraightRoute: React.Dispatch<React.SetStateAction<GeoJSON.FeatureCollection | null>>
+  geoByStraightRoute: GeoJSONType | null
+  setGeoByStraightRoute: React.Dispatch<React.SetStateAction<GeoJSONType | null>>
   newSearch: boolean
   setNewSearch: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const GeoClosedContent: React.FC<GeoClosedContentProps> = ({ selectedOption, setSelectedOption, selectedLineOption, setSelectedLineOption, handleDropdownChange, handleDropdownLineChange, historyLine, historyVehRef, clearHistory, lineOptions, vehOptions, GeoToLeaflet, setGeoToLeaflet, GeoByCurveRoute, setGeoByCurveRoute, isLoading, setIsLoading, actualGeoMode, setActualGeoMode, geoByStraightRoute, setGeoByStraightRoute, newSearch, setNewSearch }) => {
+const GeoClosedContent: React.FC<GeoClosedContentProps> = ({ selectedOption, setSelectedOption, selectedLineOption, setSelectedLineOption, historyLine, historyVehRef, clearHistory, lineOptions, vehOptions, GeoToLeaflet, setGeoToLeaflet, GeoByCurveRoute, setGeoByCurveRoute, isLoading, setIsLoading, actualGeoMode, setActualGeoMode, geoByStraightRoute, setGeoByStraightRoute, newSearch, setNewSearch }) => {
+  const handleDropdownChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    setSelectedOption(event.target.value)
+  }
+
+  const handleDropdownLineChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    setSelectedLineOption(event.target.value)
+  }
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //This function will check the whether actualGeoMode(to evaluate whether the user wants the straight route or
   //curved route), and whether the current search is a "newsearch". New search meant that the GeoCurveRoute data
@@ -56,7 +63,7 @@ const GeoClosedContent: React.FC<GeoClosedContentProps> = ({ selectedOption, set
   //3) actualGeoMode is currently straightroute(false) AND newSearch is false, we just switch the geoToLeafLet data
   // back to curveroute
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  const [geoArrayforClean, setGeoArrayForClean] = useState<Array<GeoJSONType>>([])
+  const [geoArrayforClean, setGeoArrayForClean] = useState<Array<Feature>>([])
   async function switchActualGeo() {
     if (actualGeoMode == true) {
       setGeoToLeaflet(geoByStraightRoute)
@@ -85,7 +92,7 @@ const GeoClosedContent: React.FC<GeoClosedContentProps> = ({ selectedOption, set
   //After curveLatLongAPI, this function will then call cleanGeoByCurveRoute, which will combine all the results from
   //curveLatLongAPI to the appropriate geoJSON form and finally set the geoJSON to GeoToLeaflet, to display on leaflet
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  async function coordinateExtract(ChangeGeoJSON: GeoJSON.FeatureCollection | null) {
+  async function coordinateExtract(ChangeGeoJSON: GeoJSONType | null) {
     setIsLoading(true)
     if (ChangeGeoJSON != null) {
       console.log(ChangeGeoJSON)
@@ -102,8 +109,8 @@ const GeoClosedContent: React.FC<GeoClosedContentProps> = ({ selectedOption, set
           console.log("NOTE THIS IS A POINT!!!!!!!!!!!!")
 
           for (let i = 0; i < coordinates.length - 1; i++) {
-            let startPt = coordinates[i]
-            let endPt = coordinates[i + 1]
+            let startPt = coordinates.slice(i)
+            let endPt = coordinates.slice(i + 1)
             //   console.log(startPt)
             //   console.log(endPt)
             console.log("coordinates length " + coordinates.length)
@@ -145,11 +152,9 @@ const GeoClosedContent: React.FC<GeoClosedContentProps> = ({ selectedOption, set
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //This function will accept coordinates, startPt and endPt then perform axios call to get the curved geoJSON
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  // Define a type for a single point
-  type Point = [number, number] // Assuming each point is [latitude, longitude]
 
   // Define a type for an array of points
-  type PointsArray = Point[]
+  type PointsArray = number[]
   async function curveLatLongAPI(startPt: PointsArray, endPt: PointsArray, coordinateFlag: string) {
     console.log("INSIDE CURVELATLONG!!!!!!!!!!!!!!!!!!!!!!!")
     console.log(startPt[0])
@@ -188,7 +193,7 @@ const GeoClosedContent: React.FC<GeoClosedContentProps> = ({ selectedOption, set
         console.log(response.data)
         console.log(response.data.features)
 
-        const filteredFeatures: GeoJSONType = response.data.features.filter((feature: Feature) => {
+        const filteredFeatures: Feature = response.data.features.filter((feature: Feature) => {
           if (coordinateFlag == "first") {
             console.log("FIRST FEATURE START")
             if (feature.properties) return feature.properties["point type"] !== "start" && feature.properties["point type"] !== "goal" && feature.properties["point type"] !== "closest goal"
@@ -234,10 +239,10 @@ const GeoClosedContent: React.FC<GeoClosedContentProps> = ({ selectedOption, set
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //This function will collect geoJSON from curvedLatLongAPI, concate and map them to allow visualization on leaflet
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  async function cleanGeoByCurveRoute(uncleanedGeoJSON: Array<GeoJSONType>) {
+  async function cleanGeoByCurveRoute(uncleanedGeoJSON: Array<Feature>) {
     console.log("INSIDE CLEANING !!!!!!!!!!!!!!!!!!!")
     // Initialize an empty array to store all features
-    let allFeatures = []
+    let allFeatures: Array<Feature> = []
     console.log("uncleanedGeoJSON ", uncleanedGeoJSON)
     ///////CHECK FOR IF ARRAY IS EMPTY if empty, we retry
     if (uncleanedGeoJSON.length == 0) {
@@ -254,7 +259,8 @@ const GeoClosedContent: React.FC<GeoClosedContentProps> = ({ selectedOption, set
       })
 
       // Create a new GeoJSON object with the combined features
-      const mergedGeoJSON = {
+      const mergedGeoJSON: GeoJSONType = {
+        app_name: "Geo Bus",
         type: "FeatureCollection",
         features: allFeatures,
       }
@@ -274,11 +280,11 @@ const GeoClosedContent: React.FC<GeoClosedContentProps> = ({ selectedOption, set
       setGeoByCurveRoute(mergedGeoJSON)
       console.log(mergedGeoJSON)
       setIsLoading(false)
-      if (mergedGeoJSON.length == 0) {
-        toast.error("Something went wrong with the curved route fetching, please try again")
-      } else {
-        toast.success("Displaying actual bus route for :" + selectedOption || selectedLineOption)
-      }
+      //   if (mergedGeoJSON.length == 0) {
+      //     toast.error("Something went wrong with the curved route fetching, please try again")
+      //   } else {
+      //     toast.success("Displaying actual bus route for :" + selectedOption || selectedLineOption)
+      //   }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -342,7 +348,7 @@ const GeoClosedContent: React.FC<GeoClosedContentProps> = ({ selectedOption, set
         </div>
       ) : (
         <div className="loader" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-          {/* <TrinityRingsSpinner color="blue"></TrinityRingsSpinner> */}
+          <TrinityRingsSpinner color="blue"></TrinityRingsSpinner>
         </div>
       )}
     </div>

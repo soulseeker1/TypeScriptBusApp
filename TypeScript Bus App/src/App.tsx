@@ -10,9 +10,10 @@ import { ToastContainer, toast } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 // import ReactSelect from "react-windowed-select" //React window to speed up loading of react select options
 // import { FixedSizeList } from "react-window"
-//import { TrinityRingsSpinner } from "react-epic-spinners"
+import { TrinityRingsSpinner } from "react-epic-spinners"
 import L from "leaflet"
 
+import { Feature, GeoJSONType } from "./types.tsx"
 import GeoOpenContent from "./GeoOpenContent.tsx"
 import GeoClosedContent from "./GeoClosedContent.jsx"
 // import LatLongMode from "./LatLongMode.jsx"
@@ -26,7 +27,7 @@ function App() {
   const [selectedLineOption, setSelectedLineOption] = useState<string | null>(null)
   const [lineref, setLineRef] = useState<Array<string>>([])
   //Main data input to leaflet
-  const [GeoToLeaflet, setGeoToLeaflet] = useState<GeoJSON.FeatureCollection | null>(null)
+  const [GeoToLeaflet, setGeoToLeaflet] = useState<GeoJSONType | null>(null)
 
   // const [center, setCenter] = useState(L.latLng(50.5, 30.5))
   // Controls the side bar
@@ -40,7 +41,7 @@ function App() {
     id: string
     // other properties...
   }
-  const [selectedFeature, setSelectedFeature] = useState<GeoFeature | null>(null) // used to see which place the user has selected
+  const [selectedFeature, setSelectedFeature] = useState<Feature | null>(null) // used to see which place the user has selected
 
   // Controls the geo information toggle button
   const [sideBarMode, setSideBarMode] = useState("Bus")
@@ -49,20 +50,17 @@ function App() {
   const [historyVehRef, setHistoryVehRef] = useState<Array<string>>(JSON.parse(localStorage.getItem("historyVehRef") || "") || [])
   const [historyLine, setHistoryLine] = useState<Array<string>>(JSON.parse(localStorage.getItem("historyLine") || "") || [])
 
-  //For alert messages
-  const [ToastMessage, setToastMessage] = useState()
-
   //For switching modes between straight route and actual route
   const [actualGeoMode, setActualGeoMode] = useState(false)
 
   //this const is used to store latlong geojson data
-  const [GeoByCurveRoute, setGeoByCurveRoute] = useState<GeoJSON.FeatureCollection | null>(null)
+  const [GeoByCurveRoute, setGeoByCurveRoute] = useState<GeoJSONType | null>(null)
 
   //For tracking whether need to update GeoByCurveRoute
   const [newSearch, setNewSearch] = useState(false)
 
   //This const is used to store the straight route geoJSOn data when user switch to actualGeoMode
-  const [geoByStraightRoute, setGeoByStraightRoute] = useState<GeoJSON.FeatureCollection | null>(null)
+  const [geoByStraightRoute, setGeoByStraightRoute] = useState<GeoJSONType | null>(null)
 
   //Saving the first closest start point and the last
   const [closestStart, setClosestStart] = useState([])
@@ -75,13 +73,13 @@ function App() {
   const [isLoading, setIsLoading] = useState(false)
   const [positionMarker, setPositionMarker] = useState([40.662674, -73.957116])
 
-  const handleDropdownChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    setSelectedOption(event.target.value)
-  }
+  // const handleDropdownChange = (event: ChangeEvent<HTMLSelectElement>) => {
+  //   setSelectedOption(event.target.value)
+  // }
 
-  const handleDropdownLineChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    setSelectedLineOption(event.target.value)
-  }
+  // const handleDropdownLineChange = (event: ChangeEvent<HTMLSelectElement>) => {
+  //   setSelectedLineOption(event.target.value)
+  // }
 
   const checkServer = async () => {
     try {
@@ -174,7 +172,7 @@ function App() {
             console.log(response.data)
             console.log(response.data.type)
             if (response.data.type === "FeatureCollection") {
-              const geoJsonWithIds = {
+              const geoJsonWithIds: GeoJSONType = {
                 ...response.data,
                 features: response.data.features.map((feature: object, index: string) => ({
                   ...feature,
@@ -193,11 +191,14 @@ function App() {
             // Use the getBounds() method to get the bounds of the GeoJSON layer
             const geoJSONLayer = L.geoJSON(response.data)
             const truebounds = geoJSONLayer.getBounds()
-            // mapRef.current.flyToBounds(truebounds)
-            const map = useMap()
-            if (map) {
-              map.flyToBounds(truebounds)
+            if (mapRef.current != null) {
+              mapRef.current.flyToBounds(truebounds)
             }
+
+            // const map = useMap()
+            // if (map) {
+            //   map.flyToBounds(truebounds)
+            // }
 
             //Call function to record history
             recordHistory("historyVehRef", historyVehRef, selectedOption)
@@ -459,7 +460,7 @@ function App() {
               </Button>
             </ButtonGroup>
 
-            {sideBarMode === "Bus" && <GeoClosedContent selectedOption={selectedOption} setSelectedOption={setSelectedOption} selectedLineOption={selectedLineOption} setSelectedLineOption={setSelectedLineOption} handleDropdownChange={handleDropdownChange} handleDropdownLineChange={handleDropdownLineChange} vehOptions={vehOptions} lineOptions={lineOptions} historyLine={historyLine} historyVehRef={historyVehRef} clearHistory={clearHistory} GeoToLeaflet={GeoToLeaflet} setGeoToLeaflet={setGeoToLeaflet} GeoByCurveRoute={GeoByCurveRoute} setGeoByCurveRoute={setGeoByCurveRoute} isLoading={isLoading} setIsLoading={setIsLoading} actualGeoMode={actualGeoMode} setActualGeoMode={setActualGeoMode} geoByStraightRoute={geoByStraightRoute} setGeoByStraightRoute={setGeoByStraightRoute} newSearch={newSearch} setNewSearch={setNewSearch} />}
+            {sideBarMode === "Bus" && <GeoClosedContent selectedOption={selectedOption} setSelectedOption={setSelectedOption} selectedLineOption={selectedLineOption} setSelectedLineOption={setSelectedLineOption} vehOptions={vehOptions} lineOptions={lineOptions} historyLine={historyLine} historyVehRef={historyVehRef} clearHistory={clearHistory} GeoToLeaflet={GeoToLeaflet} setGeoToLeaflet={setGeoToLeaflet} GeoByCurveRoute={GeoByCurveRoute} setGeoByCurveRoute={setGeoByCurveRoute} isLoading={isLoading} setIsLoading={setIsLoading} actualGeoMode={actualGeoMode} setActualGeoMode={setActualGeoMode} geoByStraightRoute={geoByStraightRoute} setGeoByStraightRoute={setGeoByStraightRoute} newSearch={newSearch} setNewSearch={setNewSearch} />}
 
             {sideBarMode === "Info" && <GeoOpenContent selectedOption={selectedOption} selectedLineOption={selectedLineOption} selectedFeature={selectedFeature} setSelectedFeature={setSelectedFeature} />}
 
@@ -467,7 +468,7 @@ function App() {
           </div>
         ) : (
           <div className="loader" style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
-            {/* <TrinityRingsSpinner color="green" size="150"></TrinityRingsSpinner> */}
+            <TrinityRingsSpinner color="green" size="150"></TrinityRingsSpinner>
           </div>
         )}
       </div>
@@ -488,7 +489,7 @@ function App() {
                   layer.on("click", () => {
                     //console.log("layerfeature" + layer.feature)
                     //console.log("selectedfeature" + selectedFeature)
-                    //setSelectedFeature(layer)
+                    setSelectedFeature(layer)
                     console.log("selectedfeature" + selectedFeature)
                     console.log("OPTION 1")
                     handleMarkerClick(layer)
@@ -498,7 +499,7 @@ function App() {
                   //handle selecting lines
                 } else {
                   layer.on("click", () => {
-                    //setSelectedFeature(feature)
+                    setSelectedFeature(feature)
                     console.log(feature)
                     console.log("OPTION 2")
                     switchOffAllMarkers()
